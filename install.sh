@@ -38,6 +38,22 @@ warn() {
 cmd=$(type -P apt-get || type -P yum || type -P zypper || type -P apk)
 [[ ! $cmd ]] && err "此脚本仅支持 ${yellow}(Ubuntu or Debian or CentOS or SUSE or Alpine)${none}."
 
+# =======================================================
+# 【新增】自动更新系统命令（支持 apt, yum, apk）
+# =======================================================
+warn "正在检查并更新系统依赖，这可能需要几分钟..."
+if [[ $cmd =~ apt-get ]]; then
+    apt-get update -y && apt-get upgrade -y
+elif [[ $cmd =~ yum ]]; then
+    yum makecache && yum update -y
+elif [[ $cmd =~ apk ]]; then
+    apk update && apk upgrade
+elif [[ $cmd =~ zypper ]]; then
+    zypper refresh && zypper update -y
+fi
+warn "系统更新完成，开始安装..."
+# =======================================================
+
 # systemd or openrc
 is_systemd=$(type -P systemctl)
 is_openrc=$(type -P rc-service)
@@ -177,7 +193,11 @@ download() {
         is_ok=$is_core_ok
         ;;
     sh)
-        link=https://github.com/${is_sh_repo}/releases/latest/download/code.tar.gz
+        # =======================================================
+        # 【修改】将这里替换为你自己的 code.tar.gz 下载地址
+        # 注意：你需要自己在本地把 src 文件夹打包成 code.tar.gz 并上传到仓库
+        # =======================================================
+        link=https://github.com/ksao123/sb-sing-box/raw/main/code.tar.gz
         name="$is_core_name 脚本"
         tmpfile=$tmpsh
         is_ok=$is_sh_ok
