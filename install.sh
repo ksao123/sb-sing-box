@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash  
 
 author=233boy
 # github=https://github.com/233boy/sing-box
